@@ -48,17 +48,22 @@ var ContactForm = React.createClass ({
     propTypes: {
         value: React.PropTypes.object.isRequired,
         onChange: React.PropTypes.func.isRequired,
-        onNewContact: React.PropTypes.func.isRequired
+        onSubmit: React.PropTypes.func.isRequired
     },
 
     render: function () {
 
         var contact = this.props.value;
         var onChange = this.props.onChange;
-        var onNewContact = this.props.onNewContact;
+        var onSubmit = this.props.onSubmit;
 
         return (
-            React.createElement ('form', {className: "ContactForm"},
+            React.createElement ('form', {
+                    className: "ContactForm",
+                    onSubmit: function (event) {
+                        onSubmit (contact)
+                        event.preventDefault()
+                    }},
                 React.createElement ('input' , {
                     type: 'text',
                     value: contact.name,
@@ -80,11 +85,8 @@ var ContactForm = React.createClass ({
                         onChange (Object.assign ({}, contact, {description: event.target.value}))
                     }}),
                 React.createElement ('button', {
-                    type: 'submit',
-                    onClick: function (event) {
-                        onNewContact (contact)
-                        event.preventDefault()
-                    }},
+                    type: 'submit'
+                    },
                     'Click!')
             )
         )
@@ -96,7 +98,7 @@ var ContactView = React.createClass ({
     propTypes: {
         contacts: React.PropTypes.array.isRequired,
         newContact: React.PropTypes.object.isRequired,
-        onNewContact: React.PropTypes.func.isRequired
+        onSubmit: React.PropTypes.func.isRequired
     },
 
     render: function () {
@@ -111,7 +113,7 @@ var ContactView = React.createClass ({
             React.createElement ('div', {className: "ContactView"},
                 React.createElement ('h1', {}, "Contacts"),
                 React.createElement ('ul', {}, listElements),
-                React.createElement (ContactForm, { value: this.props.newContact, onChange: this.props.onNewContactChange, onNewContact: this.props.onNewContact})
+                React.createElement (ContactForm, { value: this.props.newContact, onChange: this.props.onNewContactChange, onSubmit: this.props.onSubmit})
             )
         )
     }
@@ -126,10 +128,10 @@ var contacts = [
 
 var newContact = {name: "", email: "", description: ""}
 
-function onNewContact (contact) {
+function AddNewContact (contact) {
     console.log ('Adding a new contact!')
     contacts.push (Object.assign ({}, contact, {key: contacts.length + 1}))
     setState ({contacts: contacts})
 }
 
-setState ({ contacts: contacts, newContact: newContact, onNewContact: onNewContact })
+setState ({ contacts: contacts, newContact: newContact, onSubmit: AddNewContact })
