@@ -24,6 +24,11 @@ body {
   font-size: 14px;
 }
 
+.ContactForm > input.ContactForm-error,
+.ContactForm > textarea.ContactForm-error {
+  border: 1px solid red;
+}
+
 .ContactView {
 
 }

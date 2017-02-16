@@ -53,9 +53,10 @@ var ContactForm = React.createClass ({
 
     render: function () {
 
-        var contact = this.props.value;
-        var onChange = this.props.onChange;
-        var onSubmit = this.props.onSubmit;
+        var contact = this.props.value
+        var onChange = this.props.onChange
+        var onSubmit = this.props.onSubmit
+        var errors = contact.errors ||{}
 
         return (
             React.createElement ('form', {
@@ -67,6 +68,7 @@ var ContactForm = React.createClass ({
                 React.createElement ('input' , {
                     type: 'text',
                     value: contact.name,
+                    className: errors.name && 'ContactForm-error',
                     placeholder: 'name',
                     onChange: function (event) {
                         onChange (Object.assign ({}, contact, {name: event.target.value}))
@@ -74,12 +76,14 @@ var ContactForm = React.createClass ({
                 React.createElement ('input', {
                     type: 'text',
                     value: contact.email,
+                    className: errors.email && 'ContactForm-error',
                     placeholder: 'e-mail',
                     onChange: function (event) {
                         onChange (Object.assign ({}, contact, {email: event.target.value}))
                     }}),
                 React.createElement ('textarea', {
                     value: contact.description,
+                    className: errors.description && 'ContactForm-error',
                     placeholder: 'description',
                     onChange: function (event) {
                         onChange (Object.assign ({}, contact, {description: event.target.value}))
@@ -126,11 +130,19 @@ var contacts = [
     {key: 4, name: "Mariano Korman", email: "mkormanc@gmail.com", description: "Full-stack Developer"},
 ]
 
-var newContact = {name: "", email: "", description: ""}
+var newContact = {name: "", email: "", description: "", errors: {}}
 
 function AddNewContact (contact) {
     console.log ('Adding a new contact!')
-    contacts.push (Object.assign ({}, contact, {key: contacts.length + 1}))
+
+    // Validation
+    contact.errors = {}
+    if (!/.+@.+\..+/.test(contact.email)) {
+        contact.errors.email = ["Please enter a valid email"]
+    }
+    else {
+        contacts.push (Object.assign ({}, contact, {key: contacts.length + 1}))
+    }
     setState ({contacts: contacts})
 }
 
